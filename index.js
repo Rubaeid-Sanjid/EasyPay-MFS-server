@@ -26,14 +26,20 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const usersCollection = client.db("easypay").collection("users");
 
     app.post('/jwt', async(req, res)=>{
       const user_email = req.body;
-
       const token = jwt.sign(user_email, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'});
-
       res.send({token});
     })
+
+    app.post('/users', async(req, res)=>{
+      const userInfo = req.body;
+      const result = await usersCollection.insertOne(userInfo);      
+      res.send(result);
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
