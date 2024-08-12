@@ -40,6 +40,13 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/user/:email', async(req, res)=>{
+      const userEmail = req.params.email;
+      const query = {user_email: userEmail};
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
