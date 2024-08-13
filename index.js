@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const bcrypt = require('bcryptjs');
 
 //middleware
 app.use(cors());
@@ -36,6 +37,11 @@ async function run() {
 
     app.post('/users', async(req, res)=>{
       const userInfo = req.body;
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(userInfo.user_pin, salt);
+      userInfo.user_pin = hashedPassword;
+      
       const result = await usersCollection.insertOne(userInfo);      
       res.send(result);
     })
